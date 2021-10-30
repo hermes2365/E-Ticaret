@@ -1,0 +1,153 @@
+﻿@model _210921_ETicaret.Models.Message.MsgModels
+@{
+    ViewBag.Title = "Mesajlar";
+    var currentUser = (_210921_ETicaret.DB.Members)Session["LogOnUser"];
+}
+
+<div class="container">
+    <!-- Content Begin -->
+    <div class="row">
+        <div class="col-md-12 my-4">
+            <h3 class="text-danger">Mesajlarım</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped table-hover text-center table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-center text-danger" scope="col">Okundu</th>
+                        <th class="text-center text-danger" scope="col">Tarih</th>
+                        <th class="text-center text-danger" scope="col">Kimden</th>
+                        <th class="text-center text-danger" scope="col">Konu</th>
+                        <th class="text-center text-danger" scope="col">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var msj in Model.Messages)
+                    {
+                        var user = msj.MessageReplies.OrderBy(x => x.AddedDate).FirstOrDefault().Members;
+
+                        <tr>
+                            <td>
+                                @if (msj.IsRead)
+                                {
+                                    <span class="fa fa-check-square-o "></span>
+                                }
+                            </td>
+
+                            <td>@msj.AddedDate.ToShortDateString()</td>
+                            <td>@(string.Format("{0} {1} ({2})",user.Name, user.Surname,user.MemberType.ToString()))</td>
+                            <td>
+                                @msj.Subject
+                            </td>
+                            <td>
+                                <a href="~/Message/MessageReplies/@msj.Id" class="btn btn-info btn-sm">
+                                    <span class="fa fa-eye"></span>
+                                </a>
+
+                                @if (user.Id== currentUser.Id)
+                                {
+                                    <a href="~/Message/RemoveMessageReplies/@msj.Id" class="btn btn-danger btn-sm">
+                                        <span class="fa fa-trash"></span>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+                <tfoot>
+                    <tr >
+                        <td colspan="5" class="text-right mt-4">
+                            <button class="btn btn-success mt-4" data-toggle="modal" data-target="#newMessageModal">
+                                <span class="fa fa-plus mr-2"></span>
+                                Yeni Mesaj
+                            </button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <!-- Content End -->
+</div>
+@using (Html.BeginForm("SendMessage", "Message"))
+{
+    <!-- Edit Modal-->
+    <div class="modal fade" id="newMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalEdit-label" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="ModalEdit-label">Yeni Mesaj</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        @Html.DropDownList("ToUserId", Model.Users, new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.TextBox("Subject", "", new { @class = "form-control", placeholder = "Konu", required = "required" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.TextArea("MessageBody", "", new { cols = "30", rows = "5", @class = "form-control", placeholder = "Mesajınız...", style = "resize:none", required = "required" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <span class="fa fa-close mr-2"></span>
+                        Kapat
+                    </button>
+                    <button type="submit" class="btn btn-warning">
+                        <span class="fa fa-save mr-2"></span>
+                        Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<!-- Delete Modal-->
+<div class="modal fade" id="ModalDelete" tabindex="-1" role="dialog" aria-labelledby="ModalDelete-label" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="ModalDelete-label">Mesajı Sil</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-2 offset-1">
+                        <center>
+                            <span class="fa fa-trash fa-2x text-danger"></span>
+                        </center>
+                    </div>
+                    <div class="col-md-9 text-center">
+                        <p>
+                            Mesajı silmek istediğinizden <br />
+                            emin misiniz?
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="fa fa-check mr-2"></span>
+                    Hayır
+                </button>
+                <button type="button" class="btn btn-success" data-dismiss="modal">
+                    <span class="fa fa-trash mr-2"></span>
+                    Evet
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

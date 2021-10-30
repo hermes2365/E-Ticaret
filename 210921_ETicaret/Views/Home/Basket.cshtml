@@ -1,0 +1,97 @@
+﻿@model  List<_210921_ETicaret.Models.index.BasketModels>
+@{
+    ViewBag.Title = "Sepet";
+}
+
+
+<div class="container">
+    <!-- Content Begin -->
+    <div class="row">
+        <div class="col-md-12 my-4">
+            <h3 class="text-danger">Sepetim</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <small class="text-danger">@TempData["MyError"] </small>
+            @using (Html.BeginForm("Buy", "Home"))
+            {
+                <table class="table table-striped table-hover text-center table-sm">
+                    <thead>
+                        <tr>
+                            <th class="text-center text-danger" scope="col">Ürün Adı</th>
+                            <th class="text-center text-danger" scope="col">Fiyat</th>
+                            <th class="text-center text-danger" scope="col">Adet</th>
+                            <th class="text-center text-danger" scope="col">Tutar</th>
+                            <th class="text-center text-danger" scope="col">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (_210921_ETicaret.Models.index.BasketModels item in Model)
+                        {
+                            <tr>
+                                <td>@item.Product.Name</td>
+                                <td>@item.Product.Price ₺</td>
+                                <td>@item.Count</td>
+                                <td>@(item.Product.Price*item.Count)</td>
+                                <td>
+                                    <a href="~/Home/AddBasket/@item.Product.Id" class="btn btn-warning btn-sm">
+                                        <span class="fa fa-plus"></span>
+                                    </a>
+                                    <a href="~/Home/AddBasket/@item.Product.Id?remove=true" class="btn btn-info btn-sm mr-4">
+                                        <span class="fa fa-minus"></span>
+                                    </a>
+                                    <a href="~/Home/Product/@item.Product.Id" target="_blank" class="btn btn-info btn-sm">
+                                        <span class="fa fa-eye"></span>
+                                    </a>
+                                    <a href="~/Home/RemoveBasket/@item.Product.Id" class="btn btn-danger btn-sm">
+                                        <span class="fa fa-trash"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                    <tfoot>
+
+                        @if (ViewBag.CurrentAddresses != null && ((List<SelectListItem>)ViewBag.CurrentAddresses) != null)
+                        {
+                            <tr>
+                                <td colspan="3" class="text-danger text-right">
+                                    @Html.Label("AddressId", "Adres Seçiniz", new { @class = "col-form-label" })
+                                </td>
+                                <td colspan="3">
+                                    @Html.DropDownList("Address", (List<SelectListItem>)ViewBag.CurrentAddresses, new { @class = "form-control" })
+                                </td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td></td>
+                            <td class="text-center text-danger"><h2>@ViewBag.TotalPrice ₺</h2></td>
+                            <td></td>
+
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="row">
+                    <div class="col-md-12 text-right my-3">
+                        <a href="~/Home/RemoveBasket/0" class="btn btn-danger mr-2">
+                            <span class="fa fa-trash mr-2"></span>
+                            Sepeti Boşalt
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <span class="fa fa-send mr-2"></span>
+                            Satın Al
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <!-- Content End -->
+</div>

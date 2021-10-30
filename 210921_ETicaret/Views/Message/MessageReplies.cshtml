@@ -1,0 +1,80 @@
+﻿@model _210921_ETicaret.Models.Message.MessageRepliesModel
+
+@{
+    ViewBag.Title = "Mesaj Cevapları";
+    var currentUser = (_210921_ETicaret.DB.Members)Session["LogOnUser"];
+    var classMe = "col-md-9 offset-md-2 border border-danger my-1 py-3";
+    var classYou = "col-md-10 offset-md-1 alert alert-secondary border border-dark my-1 py-3";
+    var defaultImage = "images/account_64.png";
+}
+
+<div class="container">
+    <!-- Content Begin -->
+    <div class="row mt-4 mb-2">
+        <div class="col-md-12">
+            <h3>
+                <span class="text-danger">Konu:</span>  @Model.MReplies.FirstOrDefault().Messages.Subject
+            </h3>
+        </div>
+    </div>
+    <div class="row">
+
+        @foreach (var msj in Model.MReplies)
+        {
+
+            <div class="@(msj.Member_Id == currentUser.Id?classMe:classYou)">
+
+                <div class="col-md-12">
+                    
+                    <label class="col-md-2 col-form-label text-danger ">
+                        <a href="~/Account/Profil/@msj.Member_Id">
+                            <img style="width:64px" class="img rounded-circle img-fluid" src="~/@(string.IsNullOrEmpty(msj.Members.ProfileImageName)?defaultImage:msj.Members.ProfileImageName)" />
+                        </a>
+                    
+                    </label>
+
+                    <label class="col-md-9">
+                        <span class="text-light bg-dark">&nbsp; @(string.Format("{0} {1} ({2})",msj.Members.Name,msj.Members.Surname,msj.Members.MemberType.ToString())) &nbsp;</span>
+                    </label>
+
+                    <label class="col-md-2 col-form-label text-danger">Mesaj : </label>
+                    <label class="col-md-9">
+                        @msj.Text
+                    </label>
+
+                    <label class="col-md-2 col-form-label text-danger">Tarih : </label>
+                    <label class="col-md-9  text-info">
+                        @(string.Format("{0} - {1}", msj.AddedDate.ToShortDateString(), msj.AddedDate.ToShortTimeString()))
+                    </label>
+
+                </div>
+            </div>
+
+
+        }
+    </div>
+    @using (Html.BeginForm())
+    {
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <h4 class="text-danger">Mesaj Cevabı</h4>
+                    <hr />
+                </div>
+                @Html.Hidden("MessageId", Model.MReplies.FirstOrDefault().Messages.Id)
+                <div class="form-group">
+                    @Html.TextArea("Text", new { @class = "form-control", style = "resize:none", cols = "30", rows = "5", placeholder = "Cevabınız...", @maxlength = "300" })
+                </div>
+
+                <div class="form-group text-right">
+                    <button type="submit" class="btn btn-success">
+                        <span class="fa fa-send mr-2"></span>
+                        Gönder
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Content End -->
+</div>

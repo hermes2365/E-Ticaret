@@ -1,0 +1,159 @@
+﻿@{
+    _210921_ETicaret.DB.Members logonuser = (_210921_ETicaret.DB.Members)Session["LogOnUser"];
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title  My Shop E - Ticaret Sayfası</title>
+
+    <!-- META Tags -->
+    <meta charset="utf-8" />
+    <meta name="description" content="Size ait olan E-Ticaret siteniz">
+    <meta name="keywords" content="E-Ticaret, E-Commerce">
+    <meta name="author" content="İdris OLCAY">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS Links -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/font-awesome.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Bree+Serif&display=swap" rel="stylesheet">
+    <link href="~/Content/custom.css" rel="stylesheet" />
+
+</head>
+
+<body>
+    <!-- NavBar Begin -->
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <a class="navbar-brand" href="@Url.Action("index","Home", new { id=0 })">My Shop</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Menü">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            @* Kategoriler menü *@
+            <div id="navbarContent" class="collapse navbar-collapse">
+                @Html.Partial("_MenuTopCategory", (List<_210921_ETicaret.DB.Categories>)ViewBag.MenuCategories)
+
+            </div>
+            @*Menü son*@
+            <ul class="navbar-nav ml-auto">
+                @if (logonuser == null)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/Account/Register">
+                            <span class="fa fa-user-plus mr-2"></span>
+                            Kayıt Ol
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/Account/Login">
+                            <span class="fa fa-sign-in mr-2"></span>
+                            Giriş
+                        </a>
+                    </li>
+                }
+
+                else
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="~/Account/Profil" id="ddlProfile" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-user mr-2"></span>
+                            @($"{logonuser.Name} {logonuser.Surname}")
+                        </a>
+                        @*<div class="dropdown-menu" aria-labelledby="ddlProfile">
+                                <a class="dropdown-item" href="MyProfile.html">Profili Görüntüle</a>
+                                <a class="dropdown-item" href="Adresses.html">Adreslerim</a>
+                                <a class="dropdown-item" href="Orders.html">Siparişlerim</a>
+                            </div>*@
+                    </li>
+                }
+
+                @{
+                    List<_210921_ETicaret.Models.index.BasketModels> basket = (List<_210921_ETicaret.Models.index.BasketModels>)Session["Basket"];
+                    if (basket == null)
+                    {
+                        basket = new List<_210921_ETicaret.Models.index.BasketModels>();
+                    }
+                }
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="ddlCart" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="fa fa-shopping-cart mr-2"></span>
+                        Sepetim
+                        @* TO DO: Ürün sayısı eklenecek *@
+                        <span class="badge badge-secondary">@basket.Count</span>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="ddlCart">
+
+                        @foreach (_210921_ETicaret.Models.index.BasketModels item in basket)
+                        {
+                            <a class="dropdown-item" href="~/Home/Product/@item.Product.Id">@item.Product.Name (@item.Count)</a>
+                        }
+
+                        <a class="dropdown-item" href="~/Home/Basket">Sepete Git </a>
+                    </div>
+
+                </li>
+
+                @if (logonuser != null)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="~/Home/Buy" id="ddlProfile" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa  fa-shopping-basket mr-2"></span>
+                            Siparişlerim
+                        </a>
+                    </li>
+                    @Html.Action("RenderMessage", "Message")
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/Account/Logout">
+                            <span class="fa fa-sign-out mr-2"></span>
+                            Çıkış
+                        </a>
+                    </li>
+                }
+
+            </ul>
+
+        </div>
+    </nav>
+    <!-- NavBar End -->
+
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
+    <!-- Footer Begin -->
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title text-muted">MyShop Web Site</h5>
+            <div>
+                <a href="#" class="btn text-primary">
+                    <span class="fa fa-twitter fa-2x"></span>
+                </a>
+                <a href="#" class="btn text-danger">
+                    <span class="fa fa-instagram fa-2x"></span>
+                </a>
+                <a href="#" class="btn text-primary">
+                    <span class="fa fa-facebook fa-2x"></span>
+                </a>
+            </div>
+            <div>
+                <a href="mailto:hermes_olcay@hotmail.com" class="btn btn-info btn-sm">E-Posta Gönder</a>
+            </div>
+        </div>
+
+        <div class="card-footer text-muted">
+            Designed By İdris OLCAY &copy; 2022
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Bootstrap JQuery -->
+    <script src="~/Scripts/jquery-3.0.0.slim.min.js"></script>
+    <script src="~/Scripts/umd/popper.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/custom.js"></script>
+
+</body>
+
+</html>

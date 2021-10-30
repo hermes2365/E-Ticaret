@@ -1,0 +1,32 @@
+﻿@model _210921_ETicaret.DB.Products
+@{
+    if (string.IsNullOrEmpty(Model.ProductImageName))
+    {
+        Model.ProductImageName = "images/300x150.png";
+    }
+}
+
+<div class="col-md-3 my-2">
+    <div class="card">
+        <img src="~/@Model.ProductImageName" alt="..." style="max-height:142px" class="card-img-top img-fluid">
+        <div class="card-body figure-caption">
+            <h4 class="card-title text-center ProductNameStyle">
+                @Model.Name
+            </h4>
+            <a href="~/Home/AddBasket/@Model.Id" class="btn btn-success btn-sm">
+                <span class="fa fa-shopping-cart mr-2"></span>
+                Sepete Ekle
+            </a>
+            <button onclick="GetProductInfo(@Model.Id)" class="btn btn-info btn-sm float-right">
+                <span class="fa fa-info-circle mr-2"></span>
+                Bilgi
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

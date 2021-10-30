@@ -1,0 +1,26 @@
+﻿@helper MenuRecursive(List<_210921_ETicaret.DB.Categories> cats)
+{
+
+    <ul aria-labelledby="dropdownMenu2" class="dropdown-submenu border-0 shadow">
+        @foreach (var cat in cats)
+        {
+
+            if (cat.Categories1.Any())
+            {
+                <li style="list-style-type:none" >
+                    <a   class="dropdown-item" href="~/Home/index/@cat.Id">@cat.Name</a>
+                    @MenuRecursive(cat.Categories1.ToList())
+                </li>
+            }
+            else
+            {
+                <li style="list-style-type:none" ><a href="~/Home/index/@cat.Id" class="dropdown-item">@cat.Name</a></li>
+            }
+
+        }
+    </ul>
+
+}
+
+
+

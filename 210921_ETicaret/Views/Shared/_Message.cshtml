@@ -1,0 +1,19 @@
+﻿@model _210921_ETicaret.Models.Message.RenderMessageModel
+
+<li class="nav-item dropdown">
+    <a href="#" class="nav-link dropdown-toggle" id="ddlMessages" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="fa fa-envelope mr-2"></span>
+        Mesajlar
+        <span class="badge badge-secondary">@Model.Count</span>
+        <span class="caret"></span>
+    </a>
+    <div class="dropdown-menu" aria-labelledby="ddlMessages">
+
+        @foreach (var msj in Model.Messages)
+        {
+            <a class="dropdown-item" href="~/Message/MessageReplies/@msj.Id">@msj.Subject</a>
+        }
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="~/Message/Msg">Mesajlar</a>
+    </div>
+</li>
